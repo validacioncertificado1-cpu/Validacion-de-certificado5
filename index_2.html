@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Consulta de Certificados - Ministerio de Educación</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    /* ══ TOP HEADER ══ */
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 40px;
+      background: #fff;
+    }
+
+    .logo-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-block img.shield {
+      height: 65px;
+      width: auto;
+    }
+
+    .logo-text { line-height: 1.1; }
+
+    .logo-text .gov {
+      font-size: 10px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-text .rep-dom {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a2b4c;
+      text-transform: uppercase;
+    }
+
+    .logo-text .edu {
+      font-size: 18px;
+      font-weight: bold;
+      color: #c8102e;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* right block */
+    .top-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .rd-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #333;
+      text-transform: uppercase;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .search-bar input {
+      border: none;
+      outline: none;
+      padding: 6px 10px;
+      font-size: 12px;
+      width: 220px;
+      color: #666;
+    }
+
+    .search-bar button {
+      background: #fff;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #888;
+    }
+
+    .top-links {
+      display: flex;
+      gap: 8px;
+      font-size: 11px;
+      color: #666;
+    }
+
+    .top-links a {
+      color: #666;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .top-links a:hover { text-decoration: underline; color: #1a2b4c; }
+
+    /* ══ NAV ══ */
+    nav {
+      background: #fff;
+      border-top: 1px solid #eaeaea;
+      border-bottom: 1px solid #eaeaea;
+      padding: 0 40px;
+    }
+
+    nav ul { display: flex; list-style: none; gap: 5px; }
+
+    nav ul li a {
+      display: block;
+      padding: 12px 10px;
+      color: #555;
+      text-decoration: none;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    nav ul li a:hover { color: #1a2b4c; font-weight: bold; }
+
+    /* ══ PAGE WRAPPER ══ */
+    .page-wrapper {
+      background: #fff;
+      max-width: 1000px;
+      margin: 20px auto 40px;
+      padding: 0 0 30px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .section-title {
+      background: #1c283d;
+      color: #fff;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 20px 10px;
+    }
+
+    .search-row label {
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .search-row input {
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      font-size: 13px;
+      width: 200px;
+      color: #888;
+    }
+
+    .btn-dark {
+      background: #1c283d;
+      color: #fff;
+      border: none;
+      padding: 8px 24px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      border-radius: 2px;
+    }
+
+    .btn-dark:hover { background: #111827; }
+
+    .pdf-row { padding: 0 20px 20px; }
+
+    .cert-heading {
+      font-size: 26px;
+      font-weight: normal;
+      color: #333;
+      padding: 10px 20px 15px;
+    }
+
+    /* Table */
+    .cert-table {
+      width: calc(100% - 40px);
+      margin: 0 20px;
+      border-collapse: collapse;
+      font-size: 13px;
+      border: 1px solid #1a2b4c;
+    }
+
+    .cert-table thead tr th {
+      background: #fff;
+      color: #333;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .cert-table tbody tr td {
+      background: #fff;
+      padding: 10px 12px;
+      border-bottom: 1px solid #e0e0e0;
+      color: #333;
+    }
+
+    .cert-table td:first-child {
+      font-weight: bold;
+      width: 35%;
+    }
+
+    /* ══ FOOTER ══ */
+    footer {
+      background: #1b2330;
+      border-top: 1px solid #111;
+      text-align: center;
+      padding: 40px 20px;
+      color: #a0aec0;
+    }
+
+    .footer-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 50px;
+      margin-bottom: 25px;
+    }
+
+    /* Invert colors for logos to match dark background */
+    .footer-logos img {
+      height: 65px;
+      width: auto;
+      filter: brightness(0) invert(1) opacity(0.6);
+    }
+
+    .b2-badge {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .b2-badge .b2-label { font-size: 9px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
+    .b2-badge .b2-text  { font-size: 26px; font-weight: bold; line-height: 1; margin: 2px 0; }
+    .b2-badge .b2-year  { font-size: 10px; }
+
+    .footer-info {
+      font-size: 11px;
+      line-height: 1.8;
+      color: #8b9eb3;
+    }
+
+    .footer-info a { color: #8b9eb3; text-decoration: underline; }
+    .footer-info a:hover { color: #fff; }
+
+    .footer-copy {
+      font-size: 10.5px;
+      color: #6a7b8c;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ TOP HEADER ══ -->
+<div class="top-header">
+  <div class="logo-block">
+    <img class="shield"
+         src="https://imgs.search.brave.com/BZ3NEo-zEjcaFUSlQD70dWUjEuSinU6uxSPuRnwyONE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzQwLzYw/LzQxLzQwNjA0MWVi/ZWNjNGRjMzY2NWZj/OWI1Zjg1YmRiNzk3/LmpwZw"
+         alt="Escudo República Dominicana"
+         onerror="this.style.display='none'" />
+    <div class="logo-text">
+      <div class="gov">Gobierno de la</div>
+      <div class="rep-dom">República Dominicana</div>
+      <div class="edu">Educación</div>
+    </div>
+  </div>
+
+  <div class="top-right">
+    <div class="rd-label">
+      <svg width="24" height="16" viewBox="0 0 32 22" style="border:1px solid #bbb; display:block;">
+        <rect x="0"  y="0"  width="14" height="10" fill="#002d9c"/>
+        <rect x="18" y="0"  width="14" height="10" fill="#c8102e"/>
+        <rect x="0"  y="12" width="14" height="10" fill="#c8102e"/>
+        <rect x="18" y="12" width="14" height="10" fill="#002d9c"/>
+        <rect x="14" y="0"  width="4"  height="22" fill="#fff"/>
+        <rect x="0"  y="10" width="32" height="2"  fill="#fff"/>
+      </svg>
+      REPÚBLICA DOMINICANA
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="¿Qué estás buscando?" />
+      <button>&#128269;</button>
+    </div>
+    <div class="top-links">
+      <a href="#">INICIO</a> |
+      <a href="#">MAPA DEL SITIO</a> |
+      <a href="#">CONTACTOS</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <ul>
+    <li><a href="#">INICIO</a></li>
+    <li><a href="#">SOBRE NOSOTROS ˅</a></li>
+    <li><a href="#">SERVICIOS</a></li>
+    <li><a href="#">TRANSPARENCIA</a></li>
+    <li><a href="#">NOTICIAS</a></li>
+    <li><a href="#">CONTACTOS</a></li>
+  </ul>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<div class="page-wrapper">
+
+  <div class="section-title">Consulta de Certificados</div>
+
+  <div class="search-row">
+    <label>Código:</label>
+    <input type="text" placeholder="Token del reporte" />
+    <button class="btn-dark">BUSCAR</button>
+  </div>
+
+  <div class="pdf-row">
+    <button class="btn-dark">GENERAR PDF</button>
+  </div>
+
+  <div class="cert-heading">Certificado Nivel Secundaria</div>
+
+  <table class="cert-table">
+    <thead>
+      <tr>
+        <th>Parámetro</th>
+        <th>Valor</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Nombre Completo</td><td>CAMILO JOSE SANCHEZ LARA</td></tr>
+      <tr><td>IdEstudiante</td><td>17032818</td></tr>
+      <tr><td>RNE</td><td>CSL0212130001</td></tr>
+      <tr><td>Nombre del Centro</td><td>LICEO FRANCISCO GREGORIO BILLINI</td></tr>
+      <tr><td>Código del Centro</td><td>07438</td></tr>
+      <tr><td>Sección</td><td>V-A</td></tr>
+      <tr><td>Código Distrito</td><td>0304</td></tr>
+      <tr><td>Nombre Distrito</td><td>DISTRITO BANI</td></tr>
+      <tr><td>Código Regional</td><td>03</td></tr>
+      <tr><td>Nombre Regional</td><td>AZUA</td></tr>
+      <tr><td>Modalidad</td><td>ACADEMICA</td></tr>
+      <tr><td>Especialidad</td><td>MENCION GENERAL, ORD. 22' 2023</td></tr>
+      <tr><td>Año Escolar</td><td>2022 - 2023</td></tr>
+      <tr><td>Convocatoria</td><td>1</td></tr>
+      <tr><td>Fecha de Registro</td><td>9/29/2023 1:49:50 PM</td></tr>
+      <tr><td>Estado</td><td>APROBÓ EL PLAN DE ESTUDIO</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-logos">
+    <img src="https://imgs.search.brave.com/BZ3NEo-zEjcaFUSlQD70dWUjEuSinU6uxSPuRnwyONE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzQwLzYw/LzQxLzQwNjA0MWVi/ZWNjNGRjMzY2NWZj/OWI1Zjg1YmRiNzk3/LmpwZw"
+         alt="Escudo" onerror="this.style.display='none'" />
+    <img src="https://imgs.search.brave.com/BZ3NEo-zEjcaFUSlQD70dWUjEuSinU6uxSPuRnwyONE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzQwLzYw/LzQxLzQwNjA0MWVi/ZWNjNGRjMzY2NWZj/OWI1Zjg1YmRiNzk3/LmpwZw"
+         alt="MINERD" onerror="this.style.display='none'" />
+    <div class="b2-badge">
+      <div class="b2-label">NORTIC</div>
+      <div class="b2-text">B2</div>
+      <div class="b2-year">2018</div>
+    </div>
+  </div>
+
+  <div class="footer-info">
+    Ministerio de Educación de la República Dominicana<br>
+    Avenida Máximo Gómez esquina Santiago, No.02 Gazcue, Distrito Nacional, República Dominicana.<br>
+    <br>
+    Tel.: 809.688.9700 | email: <a href="mailto:info@minerd.gob.do">info@minerd.gob.do</a><br>
+    Horario: De 7:30 a.m. a 4:30 p.m. de Lunes a Viernes.<br>
+    <a href="#">Términos de uso</a> | <a href="#">Política de privacidad</a> | <a href="#">Preguntas frecuentes</a>
+  </div>
+  <div class="footer-copy">© 2022 MINISTERIO DE EDUCACIÓN | Todos los Derechos Reservados</div>
+</footer>
+
+</body>
+</html>
